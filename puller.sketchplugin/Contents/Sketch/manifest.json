@@ -1,0 +1,31 @@
+{
+  "compatibleVersion": 3,
+  "bundleVersion": 1,
+  "icon": "icon.png",
+  "commands": [
+    {
+      "name": "pull",
+      "identifier": "pull-identifier",
+      "script": "puller.js"
+    },
+    {
+      "name": "settings",
+      "identifier": "settings-identifier",
+      "script": "settings.js"
+    }
+  ],
+  "menu": {
+    "title": "pull_strings",
+    "items": [
+      "pull-identifier",
+      "settings-identifier"
+    ]
+  },
+  "version": "0.1.0",
+  "name": "puller",
+  "identifier": "puller",
+  "disableCocoaScriptPreprocessor": true,
+  "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",
+  "author": "YannickWidmer",
+  "authorEmail": "yannick.widmer@math.uzh.ch"
+}
