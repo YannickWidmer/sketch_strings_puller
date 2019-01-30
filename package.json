@@ -28,5 +28,9 @@
   "dependencies": {
     "js-base64": "^2.5.0",
     "sketch-module-web-view": "^2.1.2"
+  },
+  "repository" : {
+    "type": "git",
+    "url": "git+https://github.com/YannickWidmer/sketch_strings_puller.git"
   }
 }
