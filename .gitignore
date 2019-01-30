@@ -1,5 +1,5 @@
 # build artifacts
-plugin.sketchplugin
+puller.sketchplugin
 
 # npm
 node_modules
@@ -11,4 +11,3 @@ npm-debug.log
 
 # WebStorm
 .idea
-puller.sketchplugin/*

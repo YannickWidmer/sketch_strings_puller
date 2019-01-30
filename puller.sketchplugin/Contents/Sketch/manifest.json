@@ -21,7 +21,7 @@
       "settings-identifier"
     ]
   },
-  "version": "1.0.0",
+  "version": "1.0.1-0",
   "description": "Plugin to handle pull string values from github repositories.",
   "name": "puller",
   "identifier": "puller",
