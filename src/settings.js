@@ -1,5 +1,4 @@
 
-import sketch from 'sketch'
 const Settings = require('sketch/settings')
 
 
@@ -68,8 +67,8 @@ var set_authentification = function(context){
     label_psw.setDrawsBackground(false);
     var username = NSTextField.alloc().initWithFrame(NSMakeRect(0, viewHeight - 85, 130, 20));
     //[username setNextKeyView:password];
-    var password = NSTextField.alloc().initWithFrame(NSMakeRect(140, viewHeight - 85, 130, 20));
-
+    var password = NSSecureTextField.alloc().initWithFrame(NSMakeRect(140, viewHeight - 85, 130, 20));
+    username.setNextKeyView_(password)
     view.addSubview(username)
     view.addSubview(label_username)
     view.addSubview(password)
@@ -85,66 +84,89 @@ var set_authentification = function(context){
 
 
 
-var add_file = function(context){
-    var alert = COSAlertWindow.new();
-    alert.setIcon(NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("icon.png").path()));
-    alert.setMessageText("Add file")
+  var add_file = function(context){
+    var window = NSWindow.alloc().init();
+    window.setTitle("Add file")
 
-    // Creating dialog buttons
-    alert.addButtonWithTitle("save"); // response is 1000
-    alert.addButtonWithTitle("cancel"); // response is 1001
-
-    // Creating the view
     var viewWidth = 400;
-    var viewHeight = 140;
-
-    var view = NSView.alloc().initWithFrame(NSMakeRect(0, 0, viewWidth, viewHeight));
-    alert.addAccessoryView(view);
+    var viewHeight = 240;
+    var contentView = window.contentView()
+    window.setFrame_display(NSMakeRect(0, viewHeight - 85, viewWidth, viewHeight),false)
+    var icon = NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("icon.png").path())
+    var iconView = NSImageView.alloc().initWithFrame(NSMakeRect(10, viewHeight - 100, 60, 60))
+    iconView.setImage(icon);
+    contentView.addSubview(iconView);
 
     // Create the content of the modal                  (x,y,w,h));
-
-    var label_explanation = NSTextField.alloc().initWithFrame(NSMakeRect(0, viewHeight - 38, viewWidth - 10, 40))
-    label_explanation.setStringValue("When you visit the file on github.com the path looks like this\n https://github.com/{owner}/{repo}/blob/master/{path}");
-    label_explanation.setSelectable(false);
-    label_explanation.setEditable(false);
-    label_explanation.setBezeled(false);
-    label_explanation.setDrawsBackground(false);
-
-    var label_owner = NSTextField.alloc().initWithFrame(NSMakeRect(-1, viewHeight - 65, (viewWidth / 2) - 10, 20));
+    var label_owner = NSTextField.alloc().initWithFrame(NSMakeRect(90, viewHeight - 65, (viewWidth / 2) - 10, 20));
     label_owner.setStringValue("file owner");
     label_owner.setSelectable(false);
     label_owner.setEditable(false);
     label_owner.setBezeled(false);
     label_owner.setDrawsBackground(false);
-    var field_owner = NSTextField.alloc().initWithFrame(NSMakeRect(0, viewHeight - 85, 130, 20));
-    var label_repo = NSTextField.alloc().initWithFrame(NSMakeRect(140, viewHeight - 65, (viewWidth / 2) - 10, 20));
+    var field_owner = NSTextField.alloc().initWithFrame(NSMakeRect(90, viewHeight - 85, 130, 20));
+    var label_repo = NSTextField.alloc().initWithFrame(NSMakeRect(230, viewHeight - 65, (viewWidth / 2) - 10, 20));
     label_repo.setStringValue("repository");
     label_repo.setSelectable(false);
     label_repo.setEditable(false);
     label_repo.setBezeled(false);
     label_repo.setDrawsBackground(false);
-    var field_repo = NSTextField.alloc().initWithFrame(NSMakeRect(140, viewHeight - 85, 130, 20));
-    var label_path = NSTextField.alloc().initWithFrame(NSMakeRect(0, viewHeight - 105, (viewWidth / 2) - 10, 20));
+    var field_repo = NSTextField.alloc().initWithFrame(NSMakeRect(230, viewHeight - 85, 130, 20));
+    var label_path = NSTextField.alloc().initWithFrame(NSMakeRect(90, viewHeight - 105, (viewWidth / 2) - 10, 20));
     label_path.setStringValue("path");
     label_path.setSelectable(false);
     label_path.setEditable(false);
     label_path.setBezeled(false);
     label_path.setDrawsBackground(false);
-    var field_path = NSTextField.alloc().initWithFrame(NSMakeRect(0, viewHeight - 125, viewWidth, 20));
+    var field_path = NSTextField.alloc().initWithFrame(NSMakeRect(90, viewHeight - 130, viewWidth -130, 20));
+    var label_explanation = NSTextField.alloc().initWithFrame(NSMakeRect(20, viewHeight - 180,viewWidth - 40, 40))
+    label_explanation.setStringValue("When you visit the file on github.com the URL looks like this https://github.com/{owner}/{repo}/blob/master/{path}");
+    label_explanation.setSelectable(false);
+    label_explanation.setEditable(false);
+    label_explanation.setBezeled(false);
+    label_explanation.setDrawsBackground(false);
+    contentView.addSubview(label_explanation)
 
     // make tab switch fields (not working)
     field_owner.setNextKeyView_(field_repo)
     field_repo.setNextKeyView(field_path)
 
-    view.addSubview(label_explanation)
-    view.addSubview(field_owner)
-    view.addSubview(label_owner)
-    view.addSubview(field_repo)
-    view.addSubview(label_repo)
-    view.addSubview(field_path)
-    view.addSubview(label_path)
+    contentView.addSubview(label_explanation)
+    contentView.addSubview(field_owner)
+    contentView.addSubview(label_owner)
+    contentView.addSubview(field_repo)
+    contentView.addSubview(label_repo)
+    contentView.addSubview(field_path)
+    contentView.addSubview(label_path)
+
+    // Creating dialog buttons
+    var response = 0 // 0 None, 1000 save , 1001 cancel
+    var saveButton = NSButton.alloc().initWithFrame(NSMakeRect(viewWidth -110,viewHeight - 220,80,25))
+    saveButton.setTitle("save");
+    saveButton.setBezelStyle(NSRoundedBezelStyle)
+    //saveButton.sizeToFit();
+    //window.setDefaultButtonCell(saveButton);
+    saveButton.setKeyEquivalent("\r"); // return key
+    saveButton.setCOSJSTargetFunction( (sender) => {
+        response = 1000;
+        window.orderOut(null);
+        NSApp.stopModal();
+    })
+    contentView.addSubview(saveButton);
+    var cancelButton = NSButton.alloc().initWithFrame(NSMakeRect(viewWidth -220,viewHeight - 220,80,25))
+    cancelButton.setTitle("cancel");
+    cancelButton.setBezelStyle(NSRoundedBezelStyle)
+    //cancelButton.sizeToFit();
+    cancelButton.setKeyEquivalent("\b"); // escape key
+    cancelButton.setCOSJSTargetFunction( (sender) => {
+        response = 1001;
+        window.orderOut(null);
+        NSApp.stopModal();
+    })
+    contentView.addSubview(cancelButton);
     // Show the dialog
-    const response = alert.runModal()
+    NSApp.runModalForWindow(window);
+
     if(response == 1000){ // save
         console.log("###### Adding File ######")
         console.log(`${field_owner.stringValue()}:${field_repo.stringValue()}:${field_path.stringValue()}`)
@@ -152,6 +174,10 @@ var add_file = function(context){
         files.push([field_owner.stringValue(),field_repo.stringValue(), field_path.stringValue()])
         Settings.setSettingForKey('files', files)
     }
+
+    window = null
+    saveButton = null
+    cancelButton = null
   }
 
   var choose_files = function(context){
@@ -167,7 +193,7 @@ var add_file = function(context){
     var files = Settings.settingForKey('files') || []
 
     var viewWidth = 300;
-    var viewHeight = 140 + 30 * files.length;
+    var viewHeight =30 +  30 * files.length;
 
     var view = NSView.alloc().initWithFrame(NSMakeRect(0, 0, viewWidth, viewHeight));
     alert.addAccessoryView(view);
