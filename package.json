@@ -7,22 +7,26 @@
   "skpm": {
     "name": "puller",
     "manifest": "src/manifest.json",
-    "main": "puller.sketchplugin",
-    "assets": [
-      "assets/**/*"
-    ]
+    "main": "puller.sketchplugin"
   },
   "scripts": {
     "build": "skpm-build",
     "watch": "skpm-build --watch",
-    "start": "skpm-build --watch --run",
+    "start": "skpm-build --watch",
     "postinstall": "npm run build && skpm-link"
   },
   "devDependencies": {
-    "@skpm/builder": "^0.5.11"
+    "@skpm/builder": "^0.5.11",
+    "@skpm/extract-loader": "^2.0.2",
+    "css-loader": "^1.0.0",
+    "html-loader": "^0.5.1"
   },
+  "resources": [
+    "resources/**/*.js"
+  ],
   "author": "YannickWidmer <yannick.widmer@math.uzh.ch>",
   "dependencies": {
-    "js-base64": "^2.5.0"
+    "js-base64": "^2.5.0",
+    "sketch-module-web-view": "^2.1.2"
   }
 }
