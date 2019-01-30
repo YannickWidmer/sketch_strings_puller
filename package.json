@@ -1,6 +1,6 @@
 {
   "name": "pull_strings",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Plugin to handle pull string values from github repositories.",
   "engines": {
     "sketch": ">=3.0"
@@ -30,7 +30,7 @@
     "js-base64": "^2.5.0",
     "sketch-module-web-view": "^2.1.2"
   },
-  "repository" : {
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/YannickWidmer/sketch_strings_puller.git"
   }
