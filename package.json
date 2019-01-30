@@ -6,7 +6,7 @@
     "sketch": ">=3.0"
   },
   "skpm": {
-    "name": "puller",
+    "name": "String Value Puller",
     "manifest": "src/manifest.json",
     "main": "puller.sketchplugin"
   },
