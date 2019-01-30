@@ -122,6 +122,11 @@ var traverse = function(layers, lexicon){
 
 
 export default function(context) {
+  main(context);
+}
+
+export function main(context) {
+
   console.log('################################################################################')
   console.log('#############            Start                           #######################')
   console.log('################################################################################')
@@ -177,7 +182,7 @@ export default function(context) {
     if(layers.length > 0){
       console.log('Now processing the layer')
       const misses = traverse(layers, library[modal_res[1]]);
-      handle_misses(doc, misses)
+      handle_misses(context, misses)
     } else{
       console.log("No layers to process")
     }

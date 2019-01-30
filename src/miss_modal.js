@@ -1,51 +1,43 @@
-const UI = require('sketch/ui')
-import BrowserWindow from 'sketch-module-web-view';
+import sketch from 'sketch'
+import {main} from './puller'
 
-export function handle_misses(document,misses){
+export function handle_misses(context,misses){
     console.log('#############         creating missing modal      ######################')
-    const options = {
-        identifier: 'unique.id',
-        width: 240,
-        height: 180,
-        show: false
-      }
-    var browserWindow = new BrowserWindow(options)
+    const doc = sketch.getSelectedDocument()
+    var alert = COSAlertWindow.new();
+    alert.setIcon(NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("icon.png").path()));
+    var message;
+    if(misses[0].length >0){
+        message = "These are the missing strings"
+    }else{
+        message = "All strings were found"
+    }
+    alert.setMessageText(message)
+    alert.addButtonWithTitle("done"); // response is 1000
+    alert.addButtonWithTitle("run again"); // response is 1001
 
-    // only show the window when the page has loaded
-    browserWindow.once('ready-to-show', () => {
-        browserWindow.show()
-    })
+    var dict = []; // create an empty array
 
-    const webContents = browserWindow.webContents
 
-    // print a message when the page loads
-    webContents.on('did-finish-load', () => {
-        var name, layer;
-        for(var i in misses[0]){
-            name = misses[1][i];
-            webContents
-            .executeJavaScript(`addElement('${name}', ${i});`)
-            .catch(console.error);
-        }
 
-    })
+    for(let i=0; i < misses[0].length; i++){
 
-    // add a handler for a call from web content's javascript
-    webContents.on('selected', (index) => {
-        console.log('Centering on layer '+ index);
-        var lay = misses[0][index]
-        document.centerOnLayer(lay.sketchObject);
-        console.log('Centered');
+        var btn = NSButton.alloc().init();
+        btn.setTitle(misses[1][i]);
+        btn.setBezelStyle(NSRoundedBezelStyle)
+        btn.sizeToFit();
+        btn.setCOSJSTargetFunction( (sender) => {
+            doc.centerOnLayer(misses[0][i].sketchObject);
+        })
+        alert.addAccessoryView(btn);
+    }
 
-        console.log('deselected');
-        lay.select = true;
-        console.log('selected');
-    })
-
-    // add a handler for a call from web content's javascript
-    webContents.on('nativeLog', (s) => {
-        console.log(s)
-    })
-
-    browserWindow.loadURL(require("../resources/webview.html"))
+    // Show the dialog
+    switch(alert.runModal()){
+        case 1000: // done
+            break;
+        case 1001: // run again
+            main(context)
+            break;
+    }
 }
