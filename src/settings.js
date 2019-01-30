@@ -77,7 +77,7 @@ var set_authentification = function(context){
     const response = alert.runModal()
     if(response == 1000){
         Settings.setSettingForKey('git-username', username.stringValue())
-        Settings.setSettingForKey('git-password', password.stringValue())
+        Settings.setSettingForKey('git-password', password.stringValue()+'')
         Settings.setSettingForKey('settings-exist', true)
     }
   }
@@ -240,10 +240,6 @@ export function check_settings_are_right(context,message){
     // Creating dialog buttons
     alert.addButtonWithTitle("ok"); // response is 1000
     alert.addButtonWithTitle("settings"); // response is 1001
-
-    // Creating the view
-    var viewWidth = 400;
-    var viewHeight = 300;
 
     // Show the dialog
     if(alert.runModal() == 1001){
