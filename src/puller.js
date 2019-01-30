@@ -86,9 +86,6 @@ var traverse = function(layers, lexicon){
         console.log(`#### ${name}'s value is missing`)
         missing.push(layer)
         missing_names.push(name)
-        console.log(`#### after`)
-        console.log(missing.length)
-        console.log(missing_names.length)
       }
     } else if (layer instanceof sketch.SymbolInstance && layer.name.startsWith('$')){
       var override
@@ -105,8 +102,6 @@ var traverse = function(layers, lexicon){
             console.log(`#### ${name}'s value is missing`)
             missing.push(override)
             missing_names.push(name)
-            console.log(missing)
-            console.log(missing_names)
           }
         }
       }
