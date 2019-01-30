@@ -100,7 +100,7 @@ var traverse = function(layers, lexicon){
             symbolInstance.setOverrideValue(override,convertHtmlToRtf(lexicon[name]))
           }else {
             console.log(`#### ${name}'s value is missing`)
-            missing.push(override)
+            missing.push(layer)
             missing_names.push(name)
           }
         }
@@ -182,8 +182,7 @@ export default function(context) {
       console.log("No layers to process")
     }
   })
-  .catch(err => {console.log(err)})
-  //.catch(file_path => check_settings_are_right(context,file_path))
+  .catch(file_path => check_settings_are_right(context,file_path))
 }
 
 
