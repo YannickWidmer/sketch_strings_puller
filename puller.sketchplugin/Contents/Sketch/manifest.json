@@ -21,11 +21,12 @@
       "settings-identifier"
     ]
   },
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Plugin to handle pull string values from github repositories.",
   "name": "puller",
   "identifier": "puller",
   "disableCocoaScriptPreprocessor": true,
-  "appcast": "https://raw.githubusercontent.com//master/.appcast.xml",
+  "appcast": "https://raw.githubusercontent.com/YannickWidmer/sketch_strings_puller/master/.appcast.xml",
   "author": "YannickWidmer",
   "authorEmail": "yannick.widmer@math.uzh.ch"
 }
