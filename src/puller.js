@@ -78,6 +78,7 @@ var traverse = function(layers, lexicon){
     if (layer instanceof sketch.Text && layer.name.startsWith('$')) {
       name = layer.name.substr(1);
       console.log(`## checking string existance for ${name} `)
+      console.log(lexicon)
       if(lexicon.hasOwnProperty(name)){
         console.log(`value: ${lexicon[name]} `)
         layer.sketchObject.setStringValue(convertHtmlToRtf(lexicon[name]));
@@ -110,7 +111,7 @@ var traverse = function(layers, lexicon){
         }
       }
     } else if (layer instanceof sketch.Group){
-      var intermediate_res = traverse(layer.layers)
+      var intermediate_res = traverse(layer.layers,lexicon)
       missing = missing.concat(intermediate_res[0])
       missing_names = missing_names.concat(intermediate_res[1])
     }
