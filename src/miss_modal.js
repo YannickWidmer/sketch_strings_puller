@@ -6,6 +6,7 @@ export function handle_misses(context,misses){
     console.log(misses[1])
     console.log('#############         creating missing modal      ######################')
     const doc = sketch.getSelectedDocument()
+    const  pasteBoard = NSPasteboard.generalPasteboard();
     // Create an NSThread dictionary with a specific identifier
     var threadDictionary = NSThread.mainThread().threadDictionary();
     var identifier = "com.belowZero.floating_misses_modal";
@@ -88,10 +89,13 @@ export function handle_misses(context,misses){
     for(let i=0; i < misses[0].length; i++){
         var btn = NSButton.alloc().initWithFrame(NSMakeRect(0,i * 30, 20,20));
         btn.setTitle(misses[1][i]);
-        btn.setBezelStyle(NSRoundedBezelStyle)
+        btn.setBezelStyle(NSRoundedBezelStyle);
         btn.sizeToFit();
         btn.setCOSJSTargetFunction( (sender) => {
             doc.centerOnLayer(misses[0][i].sketchObject);
+            pasteBoard.clearContents();
+            console.log("copying "+ misses[1][i]);
+            pasteBoard.writeObjects(NSArray.arrayWithObject(misses[1][i]));
         })
         scrollInnerView.addSubview(btn);
     }
