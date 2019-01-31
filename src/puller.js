@@ -200,7 +200,7 @@ function convertHtmlToRtf(html) {
   if (!(typeof html === "string" && html)) {
       return html; // it is simoply regular text
   }
-
+  return html;
   var tmpRichText, hasHyperlinks;
   var richText = html;
 
