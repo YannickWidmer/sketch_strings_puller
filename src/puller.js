@@ -97,7 +97,7 @@ var traverse = function(layers, lexicon){
           console.log(`## checking string existance for ${name} `)
           if(lexicon.hasOwnProperty(name)){
             console.log(`it's value is ${lexicon[name]} `)
-            symbolInstance.setOverrideValue(override,convertHtmlToRtf(lexicon[name]))
+            layer.setOverrideValue(override,convertHtmlToRtf(lexicon[name]))
           }else {
             console.log(`#### ${name}'s value is missing`)
             missing.push(layer)
@@ -196,13 +196,14 @@ export function main(context) {
 
 // #################### Rich text converter helper function
 
-function convertHtmlToRtf(html) {
-  if (!(typeof html === "string" && html)) {
-      return html; // it is simoply regular text
+function convertHtmlToRtf(text) {
+  var htmlRegex = new RegExp("t/<[a-z][\s\S]*>/i");
+  if (!(htmlRegex.test(text))) {
+      return text; // it is simoly regular text
   }
-  return html;
+  return text;/*
   var tmpRichText, hasHyperlinks;
-  var richText = html;
+  var richText = text;
 
   // Singleton tags
   richText = richText.replace(/<(?:hr)(?:\s+[^>]*)?\s*[\/]?>/ig, "{\\pard \\brdrb \\brdrs \\brdrw10 \\brsp20 \\par}\n{\\pard\\par}\n");
@@ -245,5 +246,5 @@ function convertHtmlToRtf(html) {
       "{\\rtf1\\ansi\n" + (hasHyperlinks ? "{\\colortbl\n;\n\\red0\\green0\\blue255;\n}\n" : "") + richText +
       "\n}";
 
-  return richText;
+  return richText;*/
 }
