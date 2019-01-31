@@ -18,8 +18,9 @@ var choose_mode = function(context,languages){
 
   // Creating dialog buttons
   alert.addButtonWithTitle("selection"); // response is 1000
-  alert.addButtonWithTitle("the whole document"); // response is 1001
-  alert.addButtonWithTitle("cancel"); // response is 1002
+  alert.addButtonWithTitle("selected page"); // response is 1001
+  alert.addButtonWithTitle("the whole document"); // response is 1002
+  alert.addButtonWithTitle("cancel"); // response is 1003
 
   // Creating the view
   var viewWidth = 300;
@@ -78,7 +79,6 @@ var traverse = function(layers, lexicon){
     if (layer instanceof sketch.Text && layer.name.startsWith('$')) {
       name = layer.name.substr(1);
       console.log(`## checking string existance for ${name} `)
-      console.log(lexicon)
       if(lexicon.hasOwnProperty(name)){
         console.log(`value: ${lexicon[name]} `)
         layer.sketchObject.setStringValue(convertHtmlToRtf(lexicon[name]));
@@ -169,7 +169,10 @@ export function main(context) {
       case 1000: // selection
         layers = doc.selectedLayers.layers;
         break;
-      case 1001: // the whole document
+      case 1001:
+        layers = doc.selectedPage.layers
+        break;
+      case 1002: // the whole document
         var page
         for(var index in doc.pages){
           page = doc.pages[index]
@@ -197,8 +200,7 @@ function convertHtmlToRtf(html) {
   if (!(typeof html === "string" && html)) {
       return html; // it is simoply regular text
   }
-  return html
-/*
+
   var tmpRichText, hasHyperlinks;
   var richText = html;
 
@@ -243,5 +245,5 @@ function convertHtmlToRtf(html) {
       "{\\rtf1\\ansi\n" + (hasHyperlinks ? "{\\colortbl\n;\n\\red0\\green0\\blue255;\n}\n" : "") + richText +
       "\n}";
 
-  return richText; */
+  return richText;
 }
