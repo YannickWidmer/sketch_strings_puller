@@ -1,5 +1,6 @@
 import sketch from 'sketch'
 import {main} from './puller'
+var UI = require('sketch/ui')
 
 export function handle_misses(context,misses){
     console.log('#############         Misses        ######################')
@@ -94,8 +95,9 @@ export function handle_misses(context,misses){
         btn.setCOSJSTargetFunction( (sender) => {
             doc.centerOnLayer(misses[0][i].sketchObject);
             pasteBoard.clearContents();
-            console.log("copying "+ misses[1][i]);
-            pasteBoard.writeObjects(NSArray.arrayWithObject(misses[1][i]));
+            var name = misses[1][i];
+            UI.message(`copied ${name} to pasteboard`);
+            pasteBoard.writeObjects(NSArray.arrayWithObject(name));
         })
         scrollInnerView.addSubview(btn);
     }
