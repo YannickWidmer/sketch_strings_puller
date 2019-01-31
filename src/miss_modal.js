@@ -2,6 +2,8 @@ import sketch from 'sketch'
 import {main} from './puller'
 
 export function handle_misses(context,misses){
+    console.log('#############         Misses        ######################')
+    console.log(misses[1])
     console.log('#############         creating missing modal      ######################')
     const doc = sketch.getSelectedDocument()
     // Create an NSThread dictionary with a specific identifier
