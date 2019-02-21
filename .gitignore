@@ -13,3 +13,5 @@ npm-debug.log
 .idea
 .gitsecret/keys/random_seed
 resources/secret.txt
+SeparateShapes-plugin.sketchplugin/Contents/Resources/secret.json
+resources/secret.json

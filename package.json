@@ -25,6 +25,11 @@
   "resources": [
     "resources/**/*.js"
   ],
+  "assets": [
+    "resources/**/*.png",
+    "resources/**/*.json"
+  ],
+
   "author": "YannickWidmer <yannick.widmer@math.uzh.ch>",
   "dependencies": {
     "js-base64": "^2.5.0",
