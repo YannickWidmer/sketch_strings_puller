@@ -29,4 +29,4 @@ _This plugin was created using `skpm`. For a detailed explanation on how things 
 
 - Make sure all Layers are taken into account.
 - Improve the missing strings window
-- add only selected page option
+- Add programatic generation of API token

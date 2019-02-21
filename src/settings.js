@@ -14,7 +14,7 @@ var settings_modal = function(context){
 
     // Creating dialog buttons
     alert.addButtonWithTitle("done"); // response is 1000
-    alert.addButtonWithTitle("username/password"); // response is 1001
+    alert.addButtonWithTitle("Github API token"); // response is 1001
     alert.addButtonWithTitle("remove files"); // response is 1002
     alert.addButtonWithTitle("add file"); // response is 1003
     // Show the dialog
@@ -40,7 +40,7 @@ var set_authentification = function(context){
     var alert = COSAlertWindow.new();
     alert.setIcon(NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("icon.png").path()));
     alert.setMessageText("Configure Git Access")
-
+    alert.setInformativeText("Create an API token by visiting https://github.com/settings/tokens and assign the scope repo to it.")
     // Creating dialog buttons
     alert.addButtonWithTitle("save"); // response is 1000
     alert.addButtonWithTitle("cancel"); // response is 1001
@@ -53,31 +53,21 @@ var set_authentification = function(context){
     alert.addAccessoryView(view);
 
     // Create the content of the modal                  (x,y,w,h));
-    var label_username = NSTextField.alloc().initWithFrame(NSMakeRect(-1, viewHeight - 65, (viewWidth / 2) - 10, 20));
-    label_username.setStringValue("username");
-    label_username.setSelectable(false);
-    label_username.setEditable(false);
-    label_username.setBezeled(false);
-    label_username.setDrawsBackground(false);
-    var label_psw = NSTextField.alloc().initWithFrame(NSMakeRect(140, viewHeight - 65, (viewWidth / 2) - 10, 20));
-    label_psw.setStringValue("password");
-    label_psw.setSelectable(false);
-    label_psw.setEditable(false);
-    label_psw.setBezeled(false);
-    label_psw.setDrawsBackground(false);
-    var username = NSTextField.alloc().initWithFrame(NSMakeRect(0, viewHeight - 85, 130, 20));
-    //[username setNextKeyView:password];
-    var password = NSSecureTextField.alloc().initWithFrame(NSMakeRect(140, viewHeight - 85, 130, 20));
-    username.setNextKeyView_(password)
-    view.addSubview(username)
-    view.addSubview(label_username)
-    view.addSubview(password)
-    view.addSubview(label_psw)
+    var label_token = NSTextField.alloc().initWithFrame(NSMakeRect(-1, viewHeight - 65, (viewWidth / 2) - 10, 20));
+    label_token.setStringValue("token");
+    label_token.setSelectable(false);
+    label_token.setEditable(false);
+    label_token.setBezeled(false);
+    label_token.setDrawsBackground(false);
+
+    var token = NSSecureTextField.alloc().initWithFrame(NSMakeRect(0, viewHeight - 85, 330, 20));
+
+    view.addSubview(token)
+    view.addSubview(label_token)
     // Show the dialog
     const response = alert.runModal()
     if(response == 1000){
-        Settings.setSettingForKey('git-username', username.stringValue())
-        Settings.setSettingForKey('git-password', password.stringValue()+'')
+        Settings.setSettingForKey('git-token', password.stringValue()+'')
         Settings.setSettingForKey('settings-exist', true)
     }
   }
@@ -275,7 +265,3 @@ export function check_settings_exist(context){
 export default function(context) {
     set_settings(context)
 }
-
-
-// Settings.setSettingForKey('my-key', 0.1)
-// var setting = Settings.settingForKey('my-key')

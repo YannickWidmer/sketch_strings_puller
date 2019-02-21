@@ -8,7 +8,7 @@ export function get_file(owner, repo, path, callback, error_callback){
     fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{
         method: "GET",
         headers: {
-          'Authorization': "Basic " + Base64.encode(Settings.settingForKey('git-username')+":" + Settings.settingForKey('git-password')),
+          'Authorization': "Basic " + Base64.encode("token " + Settings.settingForKey('git-token')),
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
