@@ -11,3 +11,4 @@ npm-debug.log
 
 # WebStorm
 .idea
+.gitsecret/keys/random_seed
