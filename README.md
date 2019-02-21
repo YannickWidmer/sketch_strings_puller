@@ -24,6 +24,9 @@ To override symbol instances, the override in the Symbol needs to have a name st
 
 _This plugin was created using `skpm`. For a detailed explanation on how things work, checkout the [skpm Readme](https://github.com/skpm/skpm/blob/master/README.md)._
 
+# Secure Token Storage
+
+To store the user token securely I use git-secret. More information can be found here https://git-secret.io/.
 
 # TODO
 
