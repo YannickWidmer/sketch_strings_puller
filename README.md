@@ -1,4 +1,9 @@
 
+# Credits
+
+This plugin uses the jsaes: JavaScript library (jsaes version 0.1  -  Copyright 2006 B. Poettering http://point-at-infinity.org/jsaes/) distributed under the terms of the GNU General Public License.
+
+
 # puller
 
 This Plugin pulls string values from a github repository in json form. To use it one needs a sketch file with textfields and text overrides to be overwritten named with a starting $ and a JSON file in a github repository with read access to it. When starting the plugin for the first time, the user is asked to give the github credentials, which are then stored in the plugin settings, and the coordinates to one or multiple json files in github. From then on it will simply pull the strings from the designed files without asking again, the files and github credentials can be changed using the settings command of the plugin.
