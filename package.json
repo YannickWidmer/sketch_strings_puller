@@ -1,6 +1,6 @@
 {
   "name": "pull_strings",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "Plugin to handle pull string values from github repositories.",
   "engines": {
     "sketch": ">=3.0"
@@ -29,7 +29,6 @@
     "resources/**/*.png",
     "resources/**/*.txt"
   ],
-
   "author": "YannickWidmer <yannick.widmer@math.uzh.ch>",
   "dependencies": {
     "js-base64": "^2.5.0",
