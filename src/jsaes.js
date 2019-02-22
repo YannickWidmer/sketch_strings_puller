@@ -60,6 +60,18 @@ var AES_Sbox_Inv, AES_ShiftRowTab_Inv, AES_xtime, key, init_todo = true
 */
 function AES_Init() {
   if(init_todo){
+    var nsDataFile = NSData.alloc().initWithContentsOfFile(context.plugin.urlForResourceNamed("secret.txt").path());
+    var raw_key_string = NSString.alloc().initWithData_encoding(nsDataFile,NSString.NSUTF8StringEncoding);
+    if(raw_key_string.length()<1){
+      raw_key_string = "";
+      var letters = '0123456789ABCDEF';
+      for(var i=0; i<64; i++){
+        raw_key_string += letters[Math.floor(Math.random() * 16)];
+      }
+      raw_key_string = NSString.alloc().initWithString(raw_key_string);
+      raw_key_string.dataUsingEncoding(NSString.NSUTF8StringEncoding).writeToFile_atomically(context.plugin.urlForResourceNamed("secret.txt").path(),true)
+
+    }
     init_todo = false
     AES_Sbox_Inv = new Array(256);
     for(var i = 0; i < 256; i++)
@@ -75,8 +87,6 @@ function AES_Init() {
       AES_xtime[128 + i] = (i << 1) ^ 0x1b;
     }
 
-    var raw_key_bites = NSData.alloc().initWithContentsOfFile(context.plugin.urlForResourceNamed("secret.txt").path());
-    var raw_key_string = NSString.alloc().initWithData_encoding(raw_key_bites,NSString.NSUTF8StringEncoding);
     key = new Array(16)
     for(var i =0; i<16 ; ++i){
         key[i] = Number(raw_key_string.charCodeAt(i));
