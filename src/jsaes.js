@@ -20,11 +20,11 @@
 /*
  * http://point-at-infinity.org/jsaes/
  *
- * This is a javascript implementation of the AES block cipher. Key lengths 
+ * This is a javascript implementation of the AES block cipher. Key lengths
  * of 128, 192 and 256 bits are supported.
  *
- * The well-functioning of the encryption/decryption routines has been 
- * verified for different key lengths with the test vectors given in 
+ * The well-functioning of the encryption/decryption routines has been
+ * verified for different key lengths with the test vectors given in
  * FIPS-197, Appendix C.
  *
  * The following code example enciphers the plaintext block '00 11 22 .. EE FF'
@@ -49,44 +49,46 @@
  *
  */
 
+// The Global variables
+
+var AES_Sbox_Inv, AES_ShiftRowTab_Inv, AES_xtime, key, init_todo = true
 /******************************************************************************/
 
-/* 
+/*
    AES_Init: initialize the tables needed at runtime. Call this function
    before the (first) key expansion.
 */
-
 function AES_Init() {
-  AES_Sbox_Inv = new Array(256);
-  for(var i = 0; i < 256; i++)
-    AES_Sbox_Inv[AES_Sbox[i]] = i;
-  
-  AES_ShiftRowTab_Inv = new Array(16);
-  for(var i = 0; i < 16; i++)
-    AES_ShiftRowTab_Inv[AES_ShiftRowTab[i]] = i;
+  if(init_todo){
+    init_todo = false
+    AES_Sbox_Inv = new Array(256);
+    for(var i = 0; i < 256; i++)
+      AES_Sbox_Inv[AES_Sbox[i]] = i;
 
-  AES_xtime = new Array(256);
-  for(var i = 0; i < 128; i++) {
-    AES_xtime[i] = i << 1;
-    AES_xtime[128 + i] = (i << 1) ^ 0x1b;
+    AES_ShiftRowTab_Inv = new Array(16);
+    for(var i = 0; i < 16; i++)
+      AES_ShiftRowTab_Inv[AES_ShiftRowTab[i]] = i;
+
+    AES_xtime = new Array(256);
+    for(var i = 0; i < 128; i++) {
+      AES_xtime[i] = i << 1;
+      AES_xtime[128 + i] = (i << 1) ^ 0x1b;
+    }
+
+    var raw_key_bites = NSData.alloc().initWithContentsOfFile(context.plugin.urlForResourceNamed("secret.txt").path());
+    var raw_key_string = NSString.alloc().initWithData_encoding(raw_key_bites,NSString.NSUTF8StringEncoding);
+    key = new Array(16)
+    for(var i =0; i<16 ; ++i){
+        key[i] = Number(raw_key_string.charCodeAt(i));
+    }
+    AES_ExpandKey(key);
   }
 }
 
-/* 
-   AES_Done: release memory reserved by AES_Init. Call this function after
-   the last encryption/decryption operation.
-*/
-
-function AES_Done() {
-  delete AES_Sbox_Inv;
-  delete AES_ShiftRowTab_Inv;
-  delete AES_xtime;
-}
-
 /*
-   AES_ExpandKey: expand a cipher key. Depending on the desired encryption 
-   strength of 128, 192 or 256 bits 'key' has to be a byte array of length 
-   16, 24 or 32, respectively. The key expansion is done "in place", meaning 
+   AES_ExpandKey: expand a cipher key. Depending on the desired encryption
+   strength of 128, 192 or 256 bits 'key' has to be a byte array of length
+   16, 24 or 32, respectively. The key expansion is done "in place", meaning
    that the array 'key' is modified.
 */
 
@@ -96,27 +98,27 @@ function AES_ExpandKey(key) {
     case 16: ks = 16 * (10 + 1); break;
     case 24: ks = 16 * (12 + 1); break;
     case 32: ks = 16 * (14 + 1); break;
-    default: 
-      alert("AES_ExpandKey: Only key lengths of 16, 24 or 32 bytes allowed!");
+    default:
+      throw "AES_ExpandKey: Only key lengths of 16, 24 or 32 bytes allowed!";
   }
   for(var i = kl; i < ks; i += 4) {
     var temp = key.slice(i - 4, i);
     if (i % kl == 0) {
-      temp = new Array(AES_Sbox[temp[1]] ^ Rcon, AES_Sbox[temp[2]], 
-	AES_Sbox[temp[3]], AES_Sbox[temp[0]]); 
+      temp = new Array(AES_Sbox[temp[1]] ^ Rcon, AES_Sbox[temp[2]],
+	    AES_Sbox[temp[3]], AES_Sbox[temp[0]]);
       if ((Rcon <<= 1) >= 256)
-	Rcon ^= 0x11b;
+	      Rcon ^= 0x11b;
     }
     else if ((kl > 24) && (i % kl == 16))
-      temp = new Array(AES_Sbox[temp[0]], AES_Sbox[temp[1]], 
-	AES_Sbox[temp[2]], AES_Sbox[temp[3]]);       
+      temp = new Array(AES_Sbox[temp[0]], AES_Sbox[temp[1]],
+	  AES_Sbox[temp[2]], AES_Sbox[temp[3]]);
     for(var j = 0; j < 4; j++)
       key[i + j] = key[i + j - kl] ^ temp[j];
   }
 }
 
-/* 
-   AES_Encrypt: encrypt the 16 byte array 'block' with the previously 
+/*
+   AES_Encrypt: encrypt the 16 byte array 'block' with the previously
    expanded key 'key'.
 */
 
@@ -134,8 +136,8 @@ function AES_Encrypt(block, key) {
   AES_AddRoundKey(block, key.slice(i, l));
 }
 
-/* 
-   AES_Decrypt: decrypt the 16 byte array 'block' with the previously 
+/*
+   AES_Decrypt: decrypt the 16 byte array 'block' with the previously
    expanded key 'key'.
 */
 
@@ -153,11 +155,40 @@ function AES_Decrypt(block, key) {
   AES_AddRoundKey(block, key.slice(0, 16));
 }
 
+export function AES_Encrypt_String(value) {
+  AES_Init();
+  var res = []
+  var block = new Array(16);
+  for(var block_number =0; block_number * 16 < value.length; ++block_number){
+    for(var i =0; i<16 ; ++i){
+        block[i] = Number(value.charCodeAt(i));
+    }
+    AES_Encrypt(block,key)
+    res.push(block)
+  }
+  return res;
+}
+
+export function AES_Decrypt_String(blocks) {
+  AES_Init();
+  var res = ""
+  var block;
+  for(var block_number =0; block_number  < blocks.length; ++block_number){
+    block = blocks[block_number];
+    AES_Decrypt(block,key)
+    for(var i =0; i<16 ; ++i){
+      if(block[i] != 0)
+          res += String.fromCharCode(block[i])
+    }
+  }
+  return res;
+}
+
 /******************************************************************************/
 
 /* The following lookup tables and functions are for internal use only! */
 
-AES_Sbox = new Array(99,124,119,123,242,107,111,197,48,1,103,43,254,215,171,
+var AES_Sbox = new Array(99,124,119,123,242,107,111,197,48,1,103,43,254,215,171,
   118,202,130,201,125,250,89,71,240,173,212,162,175,156,164,114,192,183,253,
   147,38,54,63,247,204,52,165,229,241,113,216,49,21,4,199,35,195,24,150,5,154,
   7,18,128,226,235,39,178,117,9,131,44,26,27,110,90,160,82,59,214,179,41,227,
@@ -171,11 +202,11 @@ AES_Sbox = new Array(99,124,119,123,242,107,111,197,48,1,103,43,254,215,171,
   158,225,248,152,17,105,217,142,148,155,30,135,233,206,85,40,223,140,161,
   137,13,191,230,66,104,65,153,45,15,176,84,187,22);
 
-AES_ShiftRowTab = new Array(0,5,10,15,4,9,14,3,8,13,2,7,12,1,6,11);
+var AES_ShiftRowTab = new Array(0,5,10,15,4,9,14,3,8,13,2,7,12,1,6,11);
 
 function AES_SubBytes(state, sbox) {
   for(var i = 0; i < 16; i++)
-    state[i] = sbox[state[i]];  
+    state[i] = sbox[state[i]];
 }
 
 function AES_AddRoundKey(state, rkey) {

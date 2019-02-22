@@ -1,6 +1,6 @@
 
 const Settings = require('sketch/settings')
-
+import { AES_Encrypt_String } from "./jsaes"
 
 /* ######################################################################
  * ####################     Moodals              ########################
@@ -67,7 +67,7 @@ var set_authentification = function(context){
     // Show the dialog
     const response = alert.runModal()
     if(response == 1000){
-        Settings.setSettingForKey('git-token', password.stringValue()+'')
+        Settings.setSettingForKey('git-token', AES_Encrypt_String(token.stringValue()+''))
         Settings.setSettingForKey('settings-exist', true)
     }
   }

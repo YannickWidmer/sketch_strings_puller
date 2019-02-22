@@ -27,7 +27,7 @@
   ],
   "assets": [
     "resources/**/*.png",
-    "resources/**/*.json"
+    "resources/**/*.txt"
   ],
 
   "author": "YannickWidmer <yannick.widmer@math.uzh.ch>",
