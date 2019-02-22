@@ -74,41 +74,47 @@ var traverse = function(layers, lexicon){
   var missing = [], missing_names = []
   for(var index in layers){
     layer = layers[index]
-    console.log(`    Processing: ${layer.name}`)
-    console.log(` Which is a text: ${layer.sketchObject.class() == MSTextLayer}, group: ${layer instanceof sketch.Group}, symbolinstance: ${layer instanceof sketch.SymbolInstance}`)
-    if (layer instanceof sketch.Text && layer.name.startsWith('$')) {
-      name = layer.name.substr(1);
-      console.log(`## checking string existance for ${name} `)
-      if(lexicon.hasOwnProperty(name)){
-        console.log(`value: ${lexicon[name]} `)
-        layer.sketchObject.setStringValue(convertHtmlToRtf(lexicon[name]));
-      } else {
-        console.log(`#### ${name}'s value is missing`)
-        missing.push(layer)
-        missing_names.push(name)
-      }
-    } else if (layer instanceof sketch.SymbolInstance && layer.name.startsWith('$')){
-      var override
-      for(var index in layer.overrides){
-        override = layer.overrides[index]
-        console.log(`Override (property: ${override.property}, value: ${override.value} propertyName: ${override.affectedLayer.name})`)
-        if(override.property == 'stringValue' && override.affectedLayer.name.startsWith('$')){
-          name = layer.name.substr(1) +'_' + override.affectedLayer.name.substr(1)
-          console.log(`## checking string existance for ${name} `)
-          if(lexicon.hasOwnProperty(name)){
-            console.log(`it's value is ${lexicon[name]} `)
-            layer.setOverrideValue(override,convertHtmlToRtf(lexicon[name]))
-          }else {
-            console.log(`#### ${name}'s value is missing`)
-            missing.push(layer)
-            missing_names.push(name)
+    try{
+      console.log(`    Processing: ${layer.name}`)
+      console.log(` Which is a text: ${layer.sketchObject.class() == MSTextLayer}, group: ${layer instanceof sketch.Group}, symbolinstance: ${layer instanceof sketch.SymbolInstance}`)
+      if (layer instanceof sketch.Text && layer.name.startsWith('$')) {
+        name = layer.name.substr(1);
+        console.log(`## checking string existance for ${name} `)
+        if(lexicon.hasOwnProperty(name)){
+          console.log(`value: ${lexicon[name]} `)
+          layer.sketchObject.setStringValue(convertHtmlToRtf(lexicon[name]));
+        } else {
+          console.log(`#### ${name}'s value is missing`)
+          missing.push(layer)
+          missing_names.push(name)
+        }
+      } else if (layer instanceof sketch.SymbolInstance && layer.name.startsWith('$')){
+        var override
+        for(var index in layer.overrides){
+          override = layer.overrides[index]
+          console.log(`Override (property: ${override.property}, value: ${override.value} propertyName: ${override.affectedLayer.name})`)
+          if(override.property == 'stringValue' && override.affectedLayer.name.startsWith('$')){
+            name = layer.name.substr(1) +'_' + override.affectedLayer.name.substr(1)
+            console.log(`## checking string existance for ${name} `)
+            if(lexicon.hasOwnProperty(name)){
+              console.log(`it's value is ${lexicon[name]} `)
+              layer.setOverrideValue(override,convertHtmlToRtf(lexicon[name]))
+            }else {
+              console.log(`#### ${name}'s value is missing`)
+              missing.push(layer)
+              missing_names.push(name)
+            }
           }
         }
+      } else if (layer instanceof sketch.Group){
+        var intermediate_res = traverse(layer.layers,lexicon)
+        missing = missing.concat(intermediate_res[0])
+        missing_names = missing_names.concat(intermediate_res[1])
       }
-    } else if (layer instanceof sketch.Group){
-      var intermediate_res = traverse(layer.layers,lexicon)
-      missing = missing.concat(intermediate_res[0])
-      missing_names = missing_names.concat(intermediate_res[1])
+    } catch(err){
+      console.log("Ups this was not a Layer, how did he get here?")
+      console.log(layer);
+      console.log(err.message);
     }
   }
   return [missing, missing_names]

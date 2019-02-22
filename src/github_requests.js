@@ -15,6 +15,6 @@ export function get_file(owner, repo, path, callback, error_callback){
         }
     })
         .then(response => {console.log(response); return response.json();})
-        .then(text => {console.log('result: ' + text); callback(JSON.parse(Base64.decode(text.content)))})
+        .then(text => {callback(JSON.parse(Base64.decode(text.content)))})
         .catch(e => error_callback(`There was a problem with ${owner}/${repo}/${path}.\nDo you have access to it? Are your credentials correct?`))
 }
