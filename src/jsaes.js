@@ -60,17 +60,22 @@ var AES_Sbox_Inv, AES_ShiftRowTab_Inv, AES_xtime, key, init_todo = true
 */
 function AES_Init() {
   if(init_todo){
-    var nsDataFile = NSData.alloc().initWithContentsOfFile(context.plugin.urlForResourceNamed("secret.txt").path());
-    var raw_key_string = NSString.alloc().initWithData_encoding(nsDataFile,NSString.NSUTF8StringEncoding);
+    var path = context.plugin.urlForResourceNamed("secret.txt").path()
+    var raw_key_string = NSString.stringWithContentsOfFile(path);
+    console.log('The key');
+    console.log(raw_key_string);
     if(raw_key_string.length()<1){
+      console.log('Key not found, creating key')
       raw_key_string = "";
       var letters = '0123456789ABCDEF';
       for(var i=0; i<64; i++){
         raw_key_string += letters[Math.floor(Math.random() * 16)];
       }
       raw_key_string = NSString.alloc().initWithString(raw_key_string);
-      raw_key_string.dataUsingEncoding(NSString.NSUTF8StringEncoding).writeToFile_atomically(context.plugin.urlForResourceNamed("secret.txt").path(),true)
+      raw_key_string.dataUsingEncoding(NSString.NSUTF8StringEncoding).writeToFile_atomically(path,false);
 
+    } else{
+      console.log('Key was found');
     }
     init_todo = false
     AES_Sbox_Inv = new Array(256);
@@ -168,13 +173,15 @@ function AES_Decrypt(block, key) {
 export function AES_Encrypt_String(value) {
   AES_Init();
   var res = []
-  var block = new Array(16);
-  for(var block_number =0; block_number * 16 < value.length; ++block_number){
+  var block;
+  for(var block_number =0; block_number  < value.length; block_number += 16){
+    block = new Array(16);
     for(var i =0; i<16 ; ++i){
-        block[i] = Number(value.charCodeAt(i));
+        block[i] = Number(value.charCodeAt(i + block_number));
     }
     AES_Encrypt(block,key)
     res.push(block)
+
   }
   return res;
 }
